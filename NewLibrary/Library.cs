@@ -22,21 +22,45 @@ namespace NewLibrary
             Message = $"The book {book.Name} is added to teh library.";
             return Message;
         }
-        public void TakeBook(Book book)
+        public void TakeBook(string book, string userName)
         {
-             book.IsAvailable = false;                   
-             book.DateBookIsTaken = DateTime.Now;                       
+            var bookToTake = FindBooksByName(book);
+            if (bookToTake.Count > 0)
+            {
+                var availableBook = GetAnAvailableBook(bookToTake);
+                if (availableBook != null)
+                {
+                    User user = AddUser(userName);
+                    if (user.AddTheBookToList(availableBook))
+                    {
+                        availableBook.IsAvailable = false;
+                        availableBook.DateBookIsTaken = DateTime.Now;
+                    }
+                    Message = user.Message;
+                }
+            }
         }
-        public string ReturnBook(Book book)
+        public string ReturnBook(string book, string userName)
         {
-            book.IsAvailable = true;
-            var period = book.DateBookIsTaken - DateTime.Now;
-            if (period.Days >= 60)
-                Message = $"The book {book.Name} is returned. You are late to return the book!";
-            else 
-                Message = $"The book {book.Name} is returned.";
+            User user = FindUser(userName);
+            if (user == null)
+                Message = $"User {userName} is not found";
+            else if (!user.ReturnBook(book))
+                Message = $"{user.Name} have not the book {book}";
+            else
+            {
+                 var books = FindBooksByName(book);
+                 var bookReturned = books.Where(b => b.IsAvailable == false).Select(b => b).FirstOrDefault();
+                 bookReturned.IsAvailable = true;
+                 var period = bookReturned.DateBookIsTaken - DateTime.Now;
+                 if (period.Days >= 60)
+                     Message = $"The book {bookReturned.Name} is returned. You are late to return the book!";
+                 else
+                     Message = $"The book {bookReturned.Name} is returned.";
+            }            
             return Message;
         }
+
         public string DeleteBook(string name)
         {         
             var bookList = FindBooksByName(name);
@@ -55,7 +79,7 @@ namespace NewLibrary
             }
             return Message;
         }
-        public List<Book> GetList(string paramToFilter="", FilterBy filterBy = FilterBy.All)
+        public List<Book> GetList( string paramToFilter, FilterBy filterBy)
         {
             List<Book> books = new List<Book>();
             switch (filterBy)

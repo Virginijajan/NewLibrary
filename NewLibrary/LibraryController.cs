@@ -25,6 +25,7 @@ namespace NewLibrary
         public string ParseInput(string command)
         {
             string message;
+            string userName;
             switch (command.ToLower())
             {
                 case "add":
@@ -39,39 +40,16 @@ namespace NewLibrary
                     break;
                 case "take":                 
                     string bookToTakeString = InputAndOutput("Book title: ");
-                    var bookToTake=Library.FindBooksByName(bookToTakeString);
-                    var availableBook = Library.GetAnAvailableBook(bookToTake);
-                    message = Library.Message+"\n";
-                    if (availableBook != null)
-                    {                      
-                        string userName = InputAndOutput("Users name: ");
-                        User user = Library.AddUser(userName);
-                        if(user.AddTheBookToList(availableBook))
-                            Library.TakeBook(availableBook);
-                        message = user.Message+"\n";
-                        LibraryData.Save(FileName, Library.LibraryModel);
-                    }                  
+                    userName = InputAndOutput("User name: ");
+                    Library.TakeBook(bookToTakeString, userName);
+                    message = Library.Message;                   
+                    LibraryData.Save(FileName, Library.LibraryModel);                                    
                     break;
-                case "return":
-                    
-                    string userReturnTheBookString = InputAndOutput("UserName: ");
-                    User userReturnTheBook=Library.FindUser(userReturnTheBookString);
-                    if (userReturnTheBook == null)
-                        message = $"User {userReturnTheBook} is not found";
-                    else
-                    {                    
-                        string bookToReturnString = InputAndOutput("Book title: ");
-                        bool bookCanBeReturned = userReturnTheBook.ReturnBook(bookToReturnString);
-                        if (!bookCanBeReturned)
-                            message = $"{userReturnTheBook.Name} have not the book {bookToReturnString}";
-                        else
-                        {
-                            var booksReturned=Library.FindBooksByName(bookToReturnString);
-                            var bookReturned= booksReturned.Where(b => b.IsAvailable == false).Select(b => b).FirstOrDefault();
-                            message = Library.ReturnBook(bookReturned);
-                            LibraryData.Save(FileName, Library.LibraryModel);
-                        }
-                    }                  
+                case "return":                   
+                    userName = InputAndOutput("User name: ");                                                       
+                    string bookToReturn = InputAndOutput("Book title: ");                       
+                    message = Library.ReturnBook(bookToReturn, userName);
+                    LibraryData.Save(FileName, Library.LibraryModel);                                    
                     break;
                 case "list":
                     string msg = "Commands to filter by: Name Author Category Language ISBN Taken Available\n".PadLeft(66, '-')+
