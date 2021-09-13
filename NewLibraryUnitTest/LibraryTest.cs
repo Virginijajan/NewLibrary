@@ -58,11 +58,12 @@ namespace NewLibraryUnitTest
          
             LibraryModel libraryModel = new LibraryModel();
             Library library = new Library(libraryModel);
+            User user = new User("user");
             library.AddBook(book);
             library.AddBook(book1);
 
             //Act
-            library.TakeBook(book);
+            library.TakeBook("Name","user" );
 
             //Assert           
             bool isAvailable = libraryModel.Books[0].IsAvailable;
@@ -91,13 +92,14 @@ namespace NewLibraryUnitTest
            
             LibraryModel libraryModel = new LibraryModel();
             Library library = new Library(libraryModel);
+            User user = new User("user");
             library.AddBook(book);
             library.AddBook(book1);
-            library.TakeBook(book);
-            library.TakeBook(book1);
+            library.TakeBook("Name", "user");
+            library.TakeBook("Name", "user");
 
             //Act
-            string message=library.ReturnBook(book);
+            string message=library.ReturnBook("Name", "user");
 
             //Assert           
             message.Should().Be("The book Name is returned.");           
@@ -130,7 +132,8 @@ namespace NewLibraryUnitTest
             Library library = new Library(libraryModel);
             library.AddBook(book);
             library.AddBook(book1);
-            library.TakeBook(book1);
+            User user = new User("user");
+            library.TakeBook("Name1", "user");
             
             //Act
             string message = library.DeleteBook("Name");
@@ -163,12 +166,13 @@ namespace NewLibraryUnitTest
 
             LibraryModel libraryModel = new LibraryModel();
             Library library = new Library(libraryModel);
+            User user = new User("user");
             library.AddBook(book);
             library.AddBook(book1);
-            library.TakeBook(book1);
+            library.TakeBook("Name1", "user");
 
             //Act
-            var actual=library.GetList();
+            var actual=library.GetList("",FilterBy.All );
             var actual1 = library.GetList("Name1", FilterBy.Name);
             var actual2 = library.GetList("Author", FilterBy.Author);
             var actual3 = library.GetList("Business", FilterBy.Category);
