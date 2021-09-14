@@ -52,21 +52,10 @@ namespace NewLibrary
                     LibraryData.Save(FileName, Library.LibraryModel);                                    
                     break;
                 case "list":
-                    string msg = "Commands to filter by: Name Author Category Language ISBN Taken Available\n".PadLeft(66, '-')+
-                        "\nEnter a command to filter by or any other key to show all: ";
-                    
-                    var commandToFilterString =InputAndOutput(msg);
-                    string parameter="";
-                    FilterBy commandToFilter;
-                     if(Enum.TryParse(commandToFilterString, out commandToFilter))
-                    {                      
-                        parameter = InputAndOutput("Add a parameter to filter by: ");
-                    }
-                     else
-                    {
-                        commandToFilter = FilterBy.All;
-                    }
-                    var books=Library.GetList(parameter, commandToFilter);
+                    string msg = "Enter command to filter by (Name Author Category Language ISBN Taken Available) + name: \"Command name\"\n".PadLeft(66, '-')+
+                        "\nEnter a command to filter by or any other key to show all: ";                   
+                    var commandToFilterString =InputAndOutput(msg);             
+                    var books=Library.GetList(commandToFilterString);
                     message = GetABooksTable(books);
                     break;
                 case "q":

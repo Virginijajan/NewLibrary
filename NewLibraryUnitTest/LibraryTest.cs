@@ -172,12 +172,12 @@ namespace NewLibraryUnitTest
             library.TakeBook("Name1", "user");
 
             //Act
-            var actual=library.GetList("",FilterBy.All );
-            var actual1 = library.GetList("Name1", FilterBy.Name);
-            var actual2 = library.GetList("Author", FilterBy.Author);
-            var actual3 = library.GetList("Business", FilterBy.Category);
-            var actual4 = library.GetList("",FilterBy.Available);
-            var actual5 = library.GetList("",FilterBy.Taken);
+            var actual=library.GetList("");
+            var actual1 = library.GetList("Name Name1");
+            var actual2 = library.GetList("Author Author");
+            var actual3 = library.GetList("Category Business");
+            var actual4 = library.GetList("Available");
+            var actual5 = library.GetList("Taken");
 
             //Assert           
             actual.Count.Should().Be(2);

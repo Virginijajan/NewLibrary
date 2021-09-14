@@ -79,25 +79,31 @@ namespace NewLibrary
             }
             return Message;
         }
-        public List<Book> GetList( string paramToFilter, FilterBy filterBy)
+        public List<Book> GetList( string parametersString)
         {
+            var parameters = parametersString.Split(' ');
+            string parameter = parameters.Length > 1 ? parameters[1] : "";        
+            FilterBy filterBy;
+            if (!Enum.TryParse(parameters[0], out filterBy))           
+                filterBy = FilterBy.All;            
+            
             List<Book> books = new List<Book>();
             switch (filterBy)
             {
                 case FilterBy.Name:
-                    books = LibraryModel.Books.Where(b => b.Name == paramToFilter).Select(b => b).ToList();                 
+                    books = LibraryModel.Books.Where(b => b.Name == parameter).Select(b => b).ToList();                 
                     break;
                 case FilterBy.Author:
-                    books= LibraryModel.Books.Where(b=>b.Author==paramToFilter).Select(b => b).ToList();
+                    books= LibraryModel.Books.Where(b=>b.Author==parameter).Select(b => b).ToList();
                     break;
                 case FilterBy.Category:
-                    books= LibraryModel.Books.Where(b => b.Category.ToString() == paramToFilter).Select(b => b).ToList();                 
+                    books= LibraryModel.Books.Where(b => b.Category.ToString() == parameter).Select(b => b).ToList();                 
                     break;
                 case FilterBy.Language:
-                    books = LibraryModel.Books.Where(b => b.Language.ToString() == paramToFilter).Select(b => b).ToList();                 
+                    books = LibraryModel.Books.Where(b => b.Language.ToString() == parameter).Select(b => b).ToList();                 
                     break;
                 case FilterBy.ISBN:
-                    books = LibraryModel.Books.Where(b => b.ISBN== paramToFilter).Select(b => b).ToList();                  
+                    books = LibraryModel.Books.Where(b => b.ISBN== parameter).Select(b => b).ToList();                  
                     break;
                 case FilterBy.Taken:
                     books = LibraryModel.Books.Where(b => b.IsAvailable == false).Select(b => b).ToList();              
@@ -139,6 +145,6 @@ namespace NewLibrary
         {
             var user = LibraryModel.Users.Where(u => u.Name == name).Select(u => u).FirstOrDefault();
             return user;
-        }
+        }       
     }
 }
